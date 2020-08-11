@@ -1,0 +1,123 @@
+from selenium import webdriver
+import json
+import time
+import urllib.request
+import time
+from functools import reduce
+from operator import add
+
+from selenium.webdriver.chrome.options import Options
+
+API_KEY = 'ilLuMG3kTVe7eJzWYfKDpiSm0BdKwJbE'
+LOCATION_KEY = '328328'
+cURL = "http://dataservice.accuweather.com/currentconditions/v1/328328?apikey=ilLuMG3kTVe7eJzWYfKDpiSm0BdKwJbE&details=true"
+
+def scrap_weather_Data():
+    with urllib.request.urlopen(cURL) as URL:
+        data = json.loads(URL.read().decode())
+    for key in data:
+        print(type(key['Wind']))
+        print(key['Wind']['Speed']['Metric']['Value'])
+        windSpeed = key['Wind']['Speed']['Metric']['Value']
+        cloudCover = key['CloudCover']
+        percip = key['PrecipitationSummary']['Precipitation']['Metric']['Value']
+        return [windSpeed, cloudCover, percip]
+
+
+def scrap_tweets_Data():
+    try:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        # driver.get('https://www.trendsmap.com/local/united+kingdom#collapse_trends')
+
+        driver.get(
+            'https://www.trendsmap.com/local/united+kingdom#collapse_trends')
+
+        row = driver.find_elements_by_class_name('inline-tweet-text')
+        # temp = driver.find_elements_by_tag_name('p')
+        response_list = []
+        num = len(row)
+        for i in range(4):
+            response_list.append(str(row[i].text))
+            print(str(row[i].text))
+        print("Total bbc news Records:::", num)
+        driver.close()
+        return response_list
+
+    except:
+
+        driver.close()
+        print("something went wrong")
+
+
+def scrap_bbcNews_Data():
+    try:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.get(
+            'https://www.bbc.com/news/uk')
+
+        row = driver.find_elements_by_class_name('lx-stream-post__header-text')
+        # temp = driver.find_elements_by_tag_name('p')
+        response_list = []
+        num = len(row)
+        for i in range(len(row)):
+            # print(row[i].text)
+            response_list.append(str(row[i].text))
+            # print(row2[i].text)
+            # print(temp[i].text)
+            # print('------------------------------')
+        print("Total bbc news Records:::", num)
+        driver.close()
+        return response_list
+
+    except:
+
+        driver.close()
+        print("something went wrong")
+
+
+def unique(list1):
+    # intilize a null list
+    unique_list = []
+
+    # traverse for all elements
+    for x in list1:
+        # check if exists in unique_list or not
+        if x not in unique_list:
+            unique_list.append(x)
+            # print list
+    return unique_list
+
+
+def run_forever():
+    count = 0
+    tweetList = []
+    while True:
+        toptweets = scrap_tweets_Data()
+        tweetList.append(toptweets)
+        count += 1
+        time.sleep(5)
+        if (count == 4):
+            try:
+                singleList = reduce(add, tweetList)
+                top10tweets = unique(singleList)
+                print(top10tweets)
+                news_resp = scrap_bbcNews_Data()
+                print('#################################################')
+                print(news_resp)
+                weather_resp = scrap_weather_Data()
+                print(weather_resp)
+                print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+                count = 0
+                tweetList = []
+            except:
+                continue
+        # time.sleep(120)
+
+
+if __name__ == "__main__":
+    run_forever()
+    # print(scrap_weather_Data())

@@ -1,32 +1,62 @@
 import parameters
-from time import sleep
+import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 driver = webdriver.Chrome('chromedriver.exe')
-driver.get('https://tjenester.avinor.no/cdm/login.html')
+# driver.get('https://www.linkedin.com/search/results/people/?facetGeoRegion=%5B%22au%3A0%22%5D&keywords=ANZ%20Bank&origin=FACETED_SEARCH&page=1')
+driver.get(
+    'https://cds.frost.com/#!/')
 
-linkedin_username = 'oslcdm'
-linkedin_password = 'oslcdm'
+linkedin_username = 'architha.iitkgp@gmail.com'
+linkedin_password = 'cjEDyDmf91#'
 
-username = driver.find_element_by_id('username')
+username = driver.find_element_by_id('j_username')
 username.send_keys(linkedin_username)
-sleep(0.5)
+time.sleep(0.5)
 
-password = driver.find_element_by_id('password')
+password = driver.find_element_by_id('j_password')
 password.send_keys(linkedin_password)
-sleep(2)
+time.sleep(2)
 
-sign_in_button = driver.find_element_by_xpath('/html/body/div[1]/form/span/input').click()
-sleep(5)
+sign_in_button = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[2]/div[1]/div/form/div[3]/button').click()
+time.sleep(5)
 
 # username = driver.find_element_by_class_name('even')
 # username.send_keys('hr manager in Dubai')
 # driver.find_element_by_class_name('search-typeahead-v2').send_keys(u'\ue007')
 # sleep(30)
+driver.get(
+    'https://cds.frost.com/p/17119#!/nts/c?id=9541-00-AB-00-00')
+time.sleep(5)
 
-names = driver.find_elements_by_class_name('even')
-sleep(2)
+SCROLL_PAUSE_TIME = 2
+
+# last_height = driver.execute_script("return document.body.scrollHeight")
+# while True:
+#     # Scroll down to bottom
+#     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+#
+#     # Wait to load page
+#     time.sleep(SCROLL_PAUSE_TIME)
+#
+#     # Calculate new scroll height and compare with last scroll height
+#     new_height = driver.execute_script("return document.body.scrollHeight")
+#     if new_height == last_height:
+#         break
+#     last_height = new_height
+
+driver.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[1]/div/div/div[1]/form').click()
+counter1 = 0
+
+time.sleep(10)
+for i in range(len(names)):
+    t = names[i].find_elements_by_class_name('name-and-icon')
+    if len(t) > 0:
+        counter1 = counter1 + 1
+print(counter1)
+print(len(names))
+# print(names[5].text)
 counter = 0
 for post in names:
     print(post.text)
@@ -51,5 +81,3 @@ for post in names:
 # sleep(0.5)
 
 driver.quit()
-
-

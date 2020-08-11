@@ -1,0 +1,147 @@
+from selenium import webdriver
+import time
+from functools import reduce
+from operator import add
+
+
+def scrap_weather_Data():
+    try:
+        chrome_path = "chromedriver.exe"
+        driver = webdriver.Chrome(chrome_path)
+        driver.get(
+            'https://www.accuweather.com/en/gb/london/ec4a-2/hourly-weather-forecast/328328')
+
+        SCROLL_PAUSE_TIME = 2
+
+        # Get scroll height
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        while True:
+            # Scroll down to bottom
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+            # Wait to load page
+            time.sleep(SCROLL_PAUSE_TIME)
+
+            # Calculate new scroll height and compare with last scroll height
+            new_height = driver.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+
+        row = driver.find_elements_by_class_name('precip')
+        temp = driver.find_elements_by_tag_name('p')
+        response_list = []
+
+        percip = str(row[0].text).split(':')
+
+        tempList = []
+        tempList.append(percip[1])
+        for i in range(len(temp)):
+            if 'Wind' in temp[i].text or 'Cloud Cover' in temp[i].text:
+                tempSplit = str(temp[i].text).split(':')
+                kmSplit = str(tempSplit[1]).split('km/h')
+                print(kmSplit[0])
+                tempList.append(kmSplit[0])
+
+        driver.close()
+        return tempList
+
+    except:
+
+        driver.close()
+        print("something went wrong")
+
+
+def scrap_tweets_Data():
+    try:
+        chrome_path = "chromedriver.exe"
+        driver = webdriver.Chrome(chrome_path)
+        # baseUrl = 'https://www.tripadvisor.com'
+        driver.get(
+            'https://www.trendsmap.com/local/united+kingdom#collapse_trends')
+
+        row = driver.find_elements_by_class_name('inline-tweet-text')
+        # temp = driver.find_elements_by_tag_name('p')
+        response_list = []
+        num = len(row)
+        for i in range(4):
+            response_list.append(str(row[i].text))
+        print("Total bbc news Records:::", num)
+        driver.close()
+        return response_list
+
+    except:
+
+        driver.close()
+        print("something went wrong")
+
+
+def scrap_bbcNews_Data():
+    try:
+        chrome_path = "chromedriver.exe"
+        driver = webdriver.Chrome(chrome_path)
+        # baseUrl = 'https://www.tripadvisor.com'
+        driver.get(
+            'https://www.bbc.com/news/uk')
+
+        row = driver.find_elements_by_class_name('lx-stream-post__header-text')
+        # temp = driver.find_elements_by_tag_name('p')
+        response_list = []
+        num = len(row)
+        for i in range(len(row)):
+            # print(row[i].text)
+            response_list.append(str(row[i].text))
+            # print(row2[i].text)
+            # print(temp[i].text)
+            # print('------------------------------')
+        print("Total bbc news Records:::", num)
+        driver.close()
+        return response_list
+
+    except:
+
+        driver.close()
+        print("something went wrong")
+
+
+def unique(list1):
+    # intilize a null list
+    unique_list = []
+
+    # traverse for all elements
+    for x in list1:
+        # check if exists in unique_list or not
+        if x not in unique_list:
+            unique_list.append(x)
+            # print list
+    return unique_list
+
+
+def run_forever():
+    count = 0
+    tweetList = []
+    while True:
+        toptweets = scrap_tweets_Data()
+        tweetList.append(toptweets)
+        count += 1
+        time.sleep(60)
+        if (count == 3):
+            try:
+                singleList = reduce(add, tweetList)
+                top10tweets = unique(singleList)
+                print(top10tweets)
+                news_resp = scrap_bbcNews_Data()
+                print('#################################################')
+                print(news_resp)
+                weather_resp = scrap_weather_Data()
+                print(weather_resp)
+                print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+                count = 0
+                tweetList = []
+            except:
+                continue
+        # time.sleep(120)
+
+
+if __name__ == "__main__":
+    run_forever()

@@ -3,15 +3,31 @@ from selenium import webdriver
 import sys
 import time
 
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+
 #
 
 try:
+    options = Options()
+    prefs = {
+        "translate_whitelists": {"vi": "en"},
+        "translate": {"enabled": "true"}
+    }
+    options.add_experimental_option("prefs", prefs)
     chrome_path = "chromedriver.exe"
-    driver = webdriver.Chrome(chrome_path)
-    baseUrl = 'https://www.tripadvisor.com'
+    driver = webdriver.Chrome(chrome_path, chrome_options=options)
+    # chrome_path = "chromedriver.exe"
+    # driver = webdriver.Chrome(chrome_path)
+    # baseUrl = 'https://www.tripadvisor.com'
     driver.get(
-        'https://avinor.no/en/airport/oslo-airport/flight-times/arrivals/')
+        'https://shopee.vn/-GIA-H%E1%BB%A6Y-DI%E1%BB%86T-%C3%81o-Tr%C3%B9m-Vali-%C3%81o-B%E1%BB%8Dc-Vali-Gi%C3%BAp-Ch%E1%BB%91ng-Tr%E1%BA%A7y-X%C6%B0%E1%BB%9Bc-(Ch%E1%BB%8Dn-M%C3%A0u-VS-Size)-i.13350150.965045641')
 
+    # element = driver.find_elements_by_xpath('//*[@id="module_sku-select"]/div/div/div/div/div[2]/span[2]/div/img')
+    # hov = ActionChains(element).move_to_element(element)
+    # hov.perform()
+    # driver.find_elements_by_class_name('_z5c42ow').click()
+    # driver.find_elements_by_class_name('_72kmbi0').click()
     SCROLL_PAUSE_TIME = 2
 
     # Get scroll height
@@ -29,31 +45,26 @@ try:
             break
         last_height = new_height
 
-    price = driver.find_elements_by_class_name('time')
-    flight = driver.find_elements_by_class_name('flightNo')
+    row = driver.find_elements_by_class_name('shopee-product-rating__author-name')
+    # row1 = driver.find_element_by_class_name('shopee-icon-button--right').click()
+    # row2 = driver.find_element_by_class_name('shopee-icon-button--right').click()
+    print(len(row))
+    # print(row)
+    # num = len(row)
+    # for i in range(len(row)):
+    #     # if (i == 0):
+    #     # a = row[i].find_element_by_tag_name('span')
+    #     print(row[i].text)
+    #     # print(a.text)
+    #     # if (i == 1):
+    #     #     a = row[i].find_elements_by_tag_name('span')
+    #     #     print(len(a))
+    #     #     print(a[3].text)
+    #     # print(row2[i].text)
+    #     # print(temp[i].text)
+    #     print('------------------------------')
+    # print("Total Records:::", num)
 
-    # price = driver.find_elements_by_xpath('//*[@id="ABOUT_TAB"]/div/div[2]/div[1]/div[2]/div[1]')
-
-    num = len(price)
-    for i in range(num):
-        print("time: " + price[i].text)
-        print("Flight number:" + flight[i].text)
-        print('------------------------------')
-    print("Total Records:::", num)
-    # driver1 = webdriver.Chrome(chrome_path)
-    # driver1.get(
-    #     'https://www.tripadvisor.com/Hotels-g295424-Dubai_Emirate_of_Dubai-Hotels.html')
-    #
-    # elements = driver1.find_elements_by_css_selector("div.listing_title a")
-    # for element in elements:
-    #     print(element.get_attribute("href"))
-    # counter = 0
-    # # for post in price:
-    # #     print(price.text)
-    # #     counter += 1
-    #
-    # driver.close()
-    # # print("counter======>" + str(counter))
 except:
 
     driver.close()
