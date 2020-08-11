@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3e225f5b-df2b-4407-a06b-1675c60c58bc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/heroku-test.py" beforeDir="false" afterPath="$PROJECT_DIR$/heroku-test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imageDownload.py" beforeDir="false" afterPath="$PROJECT_DIR$/imageDownload.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,7 +28,7 @@
         <entry file="file://$PROJECT_DIR$/heroku-test.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="304">
-              <caret line="18" column="168" selection-start-line="18" selection-start-column="168" selection-end-line="18" selection-end-column="168" />
+              <caret line="18" column="164" selection-start-line="18" selection-start-column="164" selection-end-line="18" selection-end-column="164" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -801,7 +800,7 @@
     <entry file="file://$PROJECT_DIR$/heroku-test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
-          <caret line="18" column="168" selection-start-line="18" selection-start-column="168" selection-end-line="18" selection-end-column="168" />
+          <caret line="18" column="164" selection-start-line="18" selection-start-column="164" selection-end-line="18" selection-end-column="164" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>
