@@ -26,7 +26,7 @@ WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@i
 file=driver.find_element_by_xpath('//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input').send_keys(os.getcwd()+'/beautiful-1687981_1920.jpg')
 # file.send_keys('1.jpg')
 print("file uploaded")
-sleep(5)
+sleep(20)
 WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#content > div > div > div > section.elementor-element.elementor-element-aac8557.elementor-section-boxed.elementor-section-height-default.elementor-section-height-default.elementor-section.elementor-top-section > div > div > div > div > div > div > div > div > div > div > div > button.btn.btn-blue'))).click()
 
 # WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/button[1]'))).click()
