@@ -11,8 +11,23 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import base64
 
 app = Flask(__name__)
+
+
+def convert_base64_to_image(base_64):
+    imgdata = base64.b64decode(base_64)
+    # I assume you have a way of picking unique filenames
+    with open(os.getcwd() + '/image.jpg', 'wb') as f:
+        f.write(imgdata)
+
+
+def convert_image_into_hexa():
+    with open("downloaded/image.png", "rb") as img_file:
+        my_string = base64.b64encode(img_file.read())
+    os.remove('downloaded/image.png')
+    return my_string
 
 
 @app.route('/', methods=['GET'])
@@ -22,13 +37,18 @@ def fun():
 
 @app.route('/img/', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
+            base_64 = str(request.form["image"])
             chrome_options = webdriver.ChromeOptions()
+            prefs = {"download.default_directory": str(os.getcwd() + '/downloaded')}
+            chrome_options.add_experimental_option("prefs", prefs)
             chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-dev-shm-usage")
             chrome_options.add_argument("--no-sandbox")
+            convert_base64_to_image(base_64)
+
             driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
                                       chrome_options=chrome_options)
             # driver.implicitly_wait(3)
@@ -39,7 +59,7 @@ def upload_file():
 
             file = driver.find_element_by_xpath(
                 '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input').send_keys(
-                os.getcwd() + '/beautiful-1274361_1920.jpg')
+                os.getcwd() + '/image.jpg')
             # file.send_keys('1.jpg')
             print("file uploaded")
             # sleep(10)
@@ -58,12 +78,13 @@ def upload_file():
             print("file bg downloaded")
             print("successful")
             driver.close()
-
-            return {'status': 'ok'}
+            os.remove(os.getcwd() + '/image.jpg')
+            base_64_output = convert_image_into_hexa()
+            return {'status': '1', 'response': base_64_output}
 
         except Exception as e:
             print(e)
-            return {'status': 'failed'}
+            return {'status': '0'}
 
 
 if __name__ == '__main__':

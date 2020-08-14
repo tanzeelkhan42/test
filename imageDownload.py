@@ -8,6 +8,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 
 options = Options()
+prefs = {"download.default_directory": str(os.getcwd())}
+options.add_experimental_option("prefs", prefs)
+
 options.add_argument("--disable-notifications")
 chrome_path = "chromedriver.exe"
 
