@@ -14,9 +14,10 @@ from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET'])
 def fun():
-    return {'message':"Hello from flask"}
+    return {'message': "Hello from flask"}
 
 
 @app.route('/img/', methods=['GET', 'POST'])
@@ -30,13 +31,8 @@ def upload_file():
             chrome_options.add_argument("--no-sandbox")
             driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
                                       chrome_options=chrome_options)
-            # driver.get('https://www.google.com/')
-            # print(driver.page_source)
-            # driver = webdriver.Chrome(chrome_path, chrome_options=options)
-            driver.implicitly_wait(3)
+            # driver.implicitly_wait(3)
             driver.get("https://jumpstory.com/remove-background/")
-            # sleep(2)
-            # temp = driver.find_elements_by_xpath('//*[@id="page-content"]/div[1]/div/div/div[1]/div/div[1]')
 
             WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH,
                                                                             '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input')))
@@ -54,29 +50,21 @@ def upload_file():
             WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
                                                                         '#content > div > div > div > section.elementor-element.elementor-element-aac8557.elementor-section-boxed.elementor-section-height-default.elementor-section-height-default.elementor-section.elementor-top-section > div > div > div > div > div > div > div > div > div > div > div > button.btn.btn-blue'))).click()
 
-            # WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/button[1]'))).click()
-            # WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/button[1]'))).click()
             print("file bg removing")
-            # driver.find_element_by_xpath('//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/button[1]').click()
-            # sleep(10)
             wait = WebDriverWait(driver, 30)
             element = wait.until(EC.element_to_be_clickable((By.XPATH,
                                                              '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/a/span')))
             element.click()
-            # WebDriverWait(driver, 20).until(EC.presence_of_element_located(
-            #     (By.XPATH, '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/a/span'))).click()
             print("file bg downloaded")
-            # driver.find_element_by_xpath('//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/a/span').click()
-            # sleep(4)
             print("successful")
             driver.close()
 
             return {'status': 'ok'}
-            # return 'ok'
+
         except Exception as e:
             print(e)
             return {'status': 'failed'}
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
