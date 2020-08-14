@@ -22,11 +22,17 @@ def convert_base64_to_image(base_64):
     with open(os.getcwd() + '/image.jpg', 'wb') as f:
         f.write(imgdata)
 
+def convert_base64_to_image2(base_64):
+    imgdata = base64.b64decode(base_64)
+    # I assume you have a way of picking unique filenames
+    with open(os.getcwd() + '/image.png', 'wb') as f:
+        f.write(imgdata)
+
 
 def convert_image_into_hexa():
-    with open("downloaded/image.png", "rb") as img_file:
+    with open("image.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
-    os.remove('downloaded/image.png')
+    os.remove('image.png')
     return my_string
 
 
@@ -41,7 +47,7 @@ def upload_file():
         try:
             base_64 = str(request.form["image"])
             chrome_options = webdriver.ChromeOptions()
-            prefs = {"download.default_directory": str(os.getcwd() + '/downloaded')}
+            prefs = {"download.default_directory": str(os.getcwd())}
             chrome_options.add_experimental_option("prefs", prefs)
             chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
             chrome_options.add_argument("--headless")
@@ -49,8 +55,12 @@ def upload_file():
             chrome_options.add_argument("--no-sandbox")
             convert_base64_to_image(base_64)
 
-            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+            driver = webdriver.Chrome(executable_path='chromedriver.exe',
                                       chrome_options=chrome_options)
+            driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
+
+            params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': os.getcwd()}}
+            command_result = driver.execute("send_command", params)
             # driver.implicitly_wait(3)
             driver.get("https://jumpstory.com/remove-background/")
 
@@ -80,7 +90,8 @@ def upload_file():
             driver.close()
             os.remove(os.getcwd() + '/image.jpg')
             base_64_output = convert_image_into_hexa()
-            return {'status': '1', 'response': base_64_output}
+            # convert_base64_to_image2(str(base_64_output)[2:])
+            return {'status': '1', 'response': str(base_64_output)[2:]}
 
         except Exception as e:
             print(e)
@@ -88,4 +99,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)
