@@ -56,7 +56,7 @@ def upload_file():
             chrome_options.add_argument("--no-sandbox")
             convert_base64_to_image(base_64)
 
-            driver = webdriver.Chrome(executable_path='chromedriver.exe',
+            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
                                       chrome_options=chrome_options)
             driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
 
