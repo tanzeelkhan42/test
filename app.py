@@ -22,6 +22,7 @@ def convert_base64_to_image(base_64):
     with open(os.getcwd() + '/image.jpg', 'wb') as f:
         f.write(imgdata)
 
+
 def convert_base64_to_image2(base_64):
     imgdata = base64.b64decode(base_64)
     # I assume you have a way of picking unique filenames
@@ -95,8 +96,8 @@ def upload_file():
 
         except Exception as e:
             print(e)
-            return {'status': '0','response':e}
+            return {'status': '0', 'response': str(e)}
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
