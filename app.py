@@ -58,6 +58,9 @@ def upload_file():
 
             driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
                                       chrome_options=chrome_options)
+            # driver = webdriver.Chrome(executable_path='chromedriver.exe',
+            #                           chrome_options=chrome_options)
+
             driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
 
             params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': os.getcwd()}}
@@ -100,4 +103,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)
