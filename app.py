@@ -95,7 +95,7 @@ def upload_file():
 
         except Exception as e:
             print(e)
-            return {'status': '0'}
+            return {'status': '0','response':e}
 
 
 if __name__ == '__main__':
