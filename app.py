@@ -31,9 +31,9 @@ def convert_base64_to_image2(base_64):
 
 
 def convert_image_into_hexa():
-    with open("image.png", "rb") as img_file:
+    with open(os.getcwd()+"/image.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
-    os.remove('image.png')
+    os.remove(os.getcwd()+'/image.png')
     return my_string
 
 
@@ -103,4 +103,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(debug=True)
