@@ -17,7 +17,6 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-
 # app.config['downloaded'] = os.getcwd() + ''
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/UPLOAD_FOLDER'
 
@@ -28,8 +27,6 @@ def convert_base64_to_image(base_64):
     # I assume you have a way of picking unique filenames
     with open(os.getcwd() + '/image.jpg', 'wb') as f:
         f.write(imgdata)
-
-
 
 
 def convert_base64_to_image2(base_64):
@@ -62,6 +59,7 @@ def download():
     except Exception as e:
         print(e)
         print('')
+
 
 @app.route('/file/', methods=['GET', 'POST'])
 def upload_file():
@@ -134,7 +132,8 @@ def file():
             os.remove(os.getcwd() + '/image.jpg')
             base_64_output = convert_image_into_hexa()
             # convert_base64_to_image2(str(base_64_output)[2:])
-            return {'status': '1', 'response': str(base_64_output)[2:],'url':}
+            return {'status': '1', 'response': str(base_64_output)[2:],
+                    'url': 'https://seleniumbg.herokuapp.com/image.png'}
 
         except Exception as e:
             print(e)
