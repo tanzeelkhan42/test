@@ -133,7 +133,7 @@ def file():
             base_64_output = convert_image_into_hexa()
             # convert_base64_to_image2(str(base_64_output)[2:])
             return {'status': '1', 'response': str(base_64_output)[2:],
-                    'url': 'https://seleniumbg.herokuapp.com/image.png'}
+                    'url': 'https://seleniumbg.herokuapp.com/url'}
 
         except Exception as e:
             print(e)
