@@ -2,7 +2,7 @@ from time import sleep
 
 import base64
 import os
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, flash
 # from werkzeug import secure_filename
 from selenium import webdriver
 import os
@@ -12,18 +12,28 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import base64
+import uuid
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 
+# app.config['downloaded'] = os.getcwd() + ''
+app.config['UPLOAD_FOLDER'] = os.getcwd() + '/UPLOAD_FOLDER'
+
+
 def convert_base64_to_image(base_64):
+    os.remove(os.getcwd() + '/image.jpg')
     imgdata = base64.b64decode(base_64)
     # I assume you have a way of picking unique filenames
     with open(os.getcwd() + '/image.jpg', 'wb') as f:
         f.write(imgdata)
 
 
+
+
 def convert_base64_to_image2(base_64):
+    os.remove(os.getcwd() + '/image.png')
     imgdata = base64.b64decode(base_64)
     # I assume you have a way of picking unique filenames
     with open(os.getcwd() + '/image.png', 'wb') as f:
@@ -31,9 +41,8 @@ def convert_base64_to_image2(base_64):
 
 
 def convert_image_into_hexa():
-    with open(os.getcwd()+"/image.png", "rb") as img_file:
+    with open(os.getcwd() + "/image.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
-    os.remove(os.getcwd()+'/image.png')
     return my_string
 
 
@@ -42,8 +51,38 @@ def fun():
     return {'message': "Hello from flask"}
 
 
-@app.route('/img/', methods=['GET', 'POST'])
+@app.route('/url/', methods=['GET'])
+def download():
+    app.config['DOWNLOADED'] = ''
+    file = 'image.png'
+    try:
+        response = send_from_directory(directory=app.config['DOWNLOADED'], filename=file, as_attachment=True)
+        response.headers['my-custom-header'] = 'my-custom-status-0'
+        return response
+    except Exception as e:
+        print(e)
+        print('')
+
+@app.route('/file/', methods=['GET', 'POST'])
 def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return {'status': 0, 'response': 'no file selected'}
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return {'status': 0, 'response': 'no file selected'}
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return {'status': 1, 'response': 'SUCCESSFUL'}
+
+
+@app.route('/img/', methods=['GET', 'POST'])
+def file():
     if request.method == 'POST':
         try:
             base_64 = str(request.form["image"])
@@ -95,7 +134,7 @@ def upload_file():
             os.remove(os.getcwd() + '/image.jpg')
             base_64_output = convert_image_into_hexa()
             # convert_base64_to_image2(str(base_64_output)[2:])
-            return {'status': '1', 'response': str(base_64_output)[2:]}
+            return {'status': '1', 'response': str(base_64_output)[2:],'url':}
 
         except Exception as e:
             print(e)
@@ -103,4 +142,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)
