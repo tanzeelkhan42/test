@@ -53,7 +53,7 @@ def download():
     app.config['DOWNLOADED'] = ''
     file = 'image.png'
     try:
-        response = send_from_directory(directory=app.config['DOWNLOADED'], filename=file, as_attachment=True)
+        response = send_from_directory(directory=app.config['DOWNLOADED'], filename=file, as_attachment=False)
         response.headers['my-custom-header'] = 'my-custom-status-0'
         return response
     except Exception as e:
