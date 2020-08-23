@@ -129,7 +129,7 @@ def file():
             print("file bg downloaded")
             print("successful")
             driver.close()
-            os.remove(os.getcwd() + '/image.jpg')
+            # os.remove(os.getcwd() + '/image.jpg')
             base_64_output = convert_image_into_hexa()
             # convert_base64_to_image2(str(base_64_output)[2:])
             return {'status': '1', 'response': str(base_64_output)[2:],
