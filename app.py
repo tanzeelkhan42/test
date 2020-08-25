@@ -2,11 +2,14 @@ from time import sleep
 
 import base64
 import os
+
+from PIL import Image
 from flask import Flask, render_template, request, send_from_directory, flash
 # from werkzeug import secure_filename
 from selenium import webdriver
 import os
-
+import cv2
+import numpy as np
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -37,10 +40,68 @@ def convert_base64_to_image2(base_64):
         f.write(imgdata)
 
 
+def centerImg():
+
+    img = cv2.imread('image.png')
+    ## (1) Convert to gray, and threshold
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    th, threshed = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
+
+    ## (2) Morph-op to remove noise
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+    morphed = cv2.morphologyEx(threshed, cv2.MORPH_CLOSE, kernel)
+
+    ## (3) Find the max-area contour
+    cnts = cv2.findContours(morphed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    cnt = sorted(cnts, key=cv2.contourArea)[-1]
+
+    ## (4) Crop and save it
+    x, y, w, h = cv2.boundingRect(cnt)
+    dst = img[y:y + h, x:x + w]
+    os.remove('image.png')
+    cv2.imwrite("image.png", dst)
+
+
 def convert_image_into_hexa():
+
     with open(os.getcwd() + "/image.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
+
+
     return my_string
+
+
+def IMAGE_CROP():
+    im = Image.open("image.png")
+    bg = Image.new("RGB", im.size, (255, 255, 255))
+    bg.paste(im, im)
+    bg.save("image.jpg") # os.remove('image.png')
+    img = cv2.imread('image.jpg')
+    ## (1) Convert to gray, and threshold
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    th, threshed = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
+    ## (2) Morph-op to remove noise
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+    morphed = cv2.morphologyEx(threshed, cv2.MORPH_CLOSE, kernel)
+    ## (3) Find the max-area contour
+    cnts = cv2.findContours(morphed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    cnt = sorted(cnts, key=cv2.contourArea)[-1]
+    ## (4) Crop and save it
+    x, y, w, h = cv2.boundingRect(cnt)
+    dst = img[y:y + h, x:x + w]
+    cv2.imwrite("103.png", dst)
+
+    img = Image.open('103.png')
+    img = img.convert("RGBA")
+    datas = img.getdata()
+    newData = []
+    for item in datas:
+        if item[0] == 255 and item[1] == 255 and item[2] == 255:
+            newData.append((255, 255, 255, 0))
+        else:
+            newData.append(item)
+    img.putdata(newData)
+    img.save("image.png", "PNG")
 
 
 @app.route('/', methods=['GET'])
@@ -88,6 +149,8 @@ def file():
             prefs = {"download.default_directory": str(os.getcwd())}
             chrome_options.add_experimental_option("prefs", prefs)
             chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+            chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-dev-shm-usage")
             chrome_options.add_argument("--no-sandbox")
@@ -130,6 +193,7 @@ def file():
             print("successful")
             driver.close()
             # os.remove(os.getcwd() + '/image.jpg')
+            IMAGE_CROP()
             base_64_output = convert_image_into_hexa()
             # convert_base64_to_image2(str(base_64_output)[2:])
             return {'status': '1', 'response': str(base_64_output)[2:],
@@ -141,4 +205,4 @@ def file():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run()
