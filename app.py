@@ -72,11 +72,11 @@ def convert_image_into_hexa():
 
 
 def IMAGE_CROP():
-    im = Image.open("image.png")
+    im = Image.open(os.getcwd()+"/image.png")
     bg = Image.new("RGB", im.size, (255, 255, 255))
     bg.paste(im, im)
-    bg.save("image.jpg") # os.remove('image.png')
-    img = cv2.imread('image.jpg')
+    bg.save(os.getcwd()+"/image.jpg") # os.remove('image.png')
+    img = cv2.imread(os.getcwd()+'/image.jpg')
     ## (1) Convert to gray, and threshold
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     th, threshed = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
@@ -89,9 +89,9 @@ def IMAGE_CROP():
     ## (4) Crop and save it
     x, y, w, h = cv2.boundingRect(cnt)
     dst = img[y:y + h, x:x + w]
-    cv2.imwrite("103.png", dst)
+    cv2.imwrite(os.getcwd()+"/103.png", dst)
 
-    img = Image.open('103.png')
+    img = Image.open(os.getcwd()+'/103.png')
     img = img.convert("RGBA")
     datas = img.getdata()
     newData = []
@@ -101,7 +101,7 @@ def IMAGE_CROP():
         else:
             newData.append(item)
     img.putdata(newData)
-    img.save("image.png", "PNG")
+    img.save(os.getcwd()+"/image.png", "PNG")
 
 
 @app.route('/', methods=['GET'])
