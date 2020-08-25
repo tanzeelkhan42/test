@@ -25,7 +25,8 @@ app.config['UPLOAD_FOLDER'] = os.getcwd() + '/UPLOAD_FOLDER'
 
 
 def convert_base64_to_image(base_64):
-    os.remove(os.getcwd() + '/image.jpg')
+    if os.path.exists(os.getcwd() + '/image.jpg'):
+        os.remove(os.getcwd() + '/image.jpg')
     imgdata = base64.b64decode(base_64)
     # I assume you have a way of picking unique filenames
     with open(os.getcwd() + '/image.jpg', 'wb') as f:
