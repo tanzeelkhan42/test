@@ -10,6 +10,8 @@ selenium = "==3.141.0"
 gunicorn = "==20.0.4"
 Flask = "==1.1.1"
 Pillow = "==6.1.0"
+opencv-python-headless = "==4.2.0.32"
+
 [requires]
 python_version = "3.6"
 
