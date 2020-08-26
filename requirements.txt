@@ -8,4 +8,4 @@ packaging==20.4
 pyparsing==2.4.7
 six==1.15.0
 Werkzeug==1.0.1
-pillow
+Pillow==6.1.0
