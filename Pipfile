@@ -10,7 +10,7 @@ selenium = "==3.141.0"
 gunicorn = "==20.0.4"
 Flask = "==1.1.1"
 Pillow = "==6.1.0"
-opencv-python = "==4.4.0.42"
+opencv-python = "==3.4.5.20"
 [requires]
 python_version = "3.6"
 
