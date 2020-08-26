@@ -100,11 +100,11 @@ def upload_file():
 
 
 def IMAGE_CROP():
-    im = Image.open(os.getcwd() + "/imaage.png")
+    im = Image.open(os.getcwd() + "/image.png")
     bg = Image.new("RGB", im.size, (255, 255, 255))
     bg.paste(im, im)
-    bg.save(os.getcwd()+"/image.jpg")  # os.remove('image.png')
-    img = cv2.imread(os.getcwd()+'/image.jpg')
+    bg.save(os.getcwd() + "/image.jpg")  # os.remove('image.png')
+    img = cv2.imread(os.getcwd() + '/image.jpg')
     ## (1) Convert to gray, and threshold
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     th, threshed = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
@@ -117,9 +117,9 @@ def IMAGE_CROP():
     ## (4) Crop and save it
     x, y, w, h = cv2.boundingRect(cnt)
     dst = img[y:y + h, x:x + w]
-    cv2.imwrite(os.getcwd()+"/103.png", dst)
+    cv2.imwrite(os.getcwd() + "/103.png", dst)
 
-    img = Image.open(os.getcwd()+'/103.png')
+    img = Image.open(os.getcwd() + '/103.png')
     img = img.convert("RGBA")
     datas = img.getdata()
     newData = []
@@ -129,7 +129,7 @@ def IMAGE_CROP():
         else:
             newData.append(item)
     img.putdata(newData)
-    img.save(os.getcwd()+"/image.png", "PNG")
+    img.save(os.getcwd() + "/image.png", "PNG")
 
 
 @app.route('/img/', methods=['GET', 'POST'])
@@ -154,7 +154,7 @@ def file():
 
             driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
 
-            params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': os.getcwd()}}
+            params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': str(os.getcwd())}}
             command_result = driver.execute("send_command", params)
             # driver.implicitly_wait(3)
             driver.get("https://jumpstory.com/remove-background/")
@@ -196,4 +196,4 @@ def file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
