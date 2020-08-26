@@ -1,8 +1,3 @@
-from time import sleep
-
-import base64
-import os
-
 from PIL import Image
 from flask import Flask, render_template, request, send_from_directory, flash
 # from werkzeug import secure_filename
@@ -25,8 +20,8 @@ app.config['UPLOAD_FOLDER'] = os.getcwd() + '/UPLOAD_FOLDER'
 
 
 def convert_base64_to_image(base_64):
-    if os.path.exists(os.getcwd() + '/image.jpg'):
-        os.remove(os.getcwd() + '/image.jpg')
+    # if os.path.exists(os.getcwd() + '/image.jpg'):
+    #     os.remove(os.getcwd() + '/image.jpg')
     imgdata = base64.b64decode(base_64)
     # I assume you have a way of picking unique filenames
     with open(os.getcwd() + '/image.jpg', 'wb') as f:
