@@ -135,65 +135,65 @@ def IMAGE_CROP():
 @app.route('/img/', methods=['GET', 'POST'])
 def file():
     if request.method == 'POST':
-        try:
-            base_64 = str(request.form['image'])
-            chrome_options = webdriver.ChromeOptions()
-            prefs = {"download.default_directory": str(os.getcwd())}
-            chrome_options.add_experimental_option("prefs", prefs)
-            chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-            chrome_options.binary_location = os.environ.get("CHROMEDRIVER_PATH")
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--no-sandbox")
-            convert_base64_to_image(base_64)
+        # try:
+        base_64 = str(request.form['image'])
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {"download.default_directory": str(os.getcwd())}
+        chrome_options.add_experimental_option("prefs", prefs)
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.binary_location = os.environ.get("CHROMEDRIVER_PATH")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--no-sandbox")
+        convert_base64_to_image(base_64)
 
-            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
-                                      chrome_options=chrome_options)
-            # driver = webdriver.Chrome(executable_path='chromedriver.exe',
-            #                           chrome_options=chrome_options)
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+                                  chrome_options=chrome_options)
+        # driver = webdriver.Chrome(executable_path='chromedriver.exe',
+        #                           chrome_options=chrome_options)
 
-            driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
+        driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
 
-            params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': str(os.getcwd())}}
-            command_result = driver.execute("send_command", params)
-            # driver.implicitly_wait(3)
-            driver.get("https://jumpstory.com/remove-background/")
+        params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': str(os.getcwd())}}
+        command_result = driver.execute("send_command", params)
+        # driver.implicitly_wait(3)
+        driver.get("https://jumpstory.com/remove-background/")
 
-            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH,
-                                                                            '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input')))
+        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH,
+                                                                        '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input')))
 
-            file = driver.find_element_by_xpath(
-                '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input').send_keys(
-                os.getcwd() + '/image.jpg')
-            # file.send_keys('1.jpg')
-            print("file uploaded")
-            # sleep(10)
-            element = driver.find_element_by_class_name("elementor-button-wrapper")
-            actions = ActionChains(driver)
-            actions.move_to_element(element).perform()
-            # sleep(3)
-            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
-                                                                        '#content > div > div > div > section.elementor-element.elementor-element-aac8557.elementor-section-boxed.elementor-section-height-default.elementor-section-height-default.elementor-section.elementor-top-section > div > div > div > div > div > div > div > div > div > div > div > button.btn.btn-blue'))).click()
+        file = driver.find_element_by_xpath(
+            '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/p[1]/label/input').send_keys(
+            os.getcwd() + '/image.jpg')
+        # file.send_keys('1.jpg')
+        print("file uploaded")
+        # sleep(10)
+        element = driver.find_element_by_class_name("elementor-button-wrapper")
+        actions = ActionChains(driver)
+        actions.move_to_element(element).perform()
+        # sleep(3)
+        WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
+                                                                    '#content > div > div > div > section.elementor-element.elementor-element-aac8557.elementor-section-boxed.elementor-section-height-default.elementor-section-height-default.elementor-section.elementor-top-section > div > div > div > div > div > div > div > div > div > div > div > button.btn.btn-blue'))).click()
 
-            print("file bg removing")
-            wait = WebDriverWait(driver, 30)
-            element = wait.until(EC.element_to_be_clickable((By.XPATH,
-                                                             '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/a/span')))
-            element.click()
-            print("file bg downloaded")
-            print("successful")
-            driver.close()
-            IMAGE_CROP()
-            # os.remove(os.getcwd() + '/image.jpg')
-            base_64_output = convert_image_into_hexa()
-            # convert_base64_to_image2(str(base_64_output)[2:])
-            return {'status': '1', 'response': str(base_64_output)[2:],
-                    'url': 'https://seleniumbg.herokuapp.com/url'}
+        print("file bg removing")
+        wait = WebDriverWait(driver, 30)
+        element = wait.until(EC.element_to_be_clickable((By.XPATH,
+                                                         '//*[@id="content"]/div/div/div/section[3]/div/div/div/div/div/div/div/div/div/div/div/a/span')))
+        element.click()
+        print("file bg downloaded")
+        print("successful")
+        driver.close()
+        IMAGE_CROP()
+        # os.remove(os.getcwd() + '/image.jpg')
+        base_64_output = convert_image_into_hexa()
+        # convert_base64_to_image2(str(base_64_output)[2:])
+        return {'status': '1', 'response': str(base_64_output)[2:],
+                'url': 'https://seleniumbg.herokuapp.com/url'}
 
-        except Exception as e:
-            print(e)
-            return {'status': '0', 'response': str(e)}
+        # except Exception as e:
+        #     print(e)
+        #     return {'status': '0', 'response': str(e)}
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(debug=True)
